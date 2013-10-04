@@ -1,5 +1,5 @@
 This program computes Lempel Ziv(LZ77) factorization from input text,
-which was made by Keisuke Goto.
+which was made by Keisuke Goto, Hideo Bannai.
 The original algorithm is proposed by Keisuke Goto and Hideo Bannai.
 Details of the algorithm are available in [HOGEHOGEHOGE].
 The souce code is hosted in http://code.google.com/p/bgone/ .
