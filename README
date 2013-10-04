@@ -1,8 +1,8 @@
-This program computes Lempel Ziv(LZ77) factorization from input text,
+This program computes Lempel Ziv (LZ77) factorization from input text,
 which was made by Keisuke Goto.
 The original algorithm is proposed by Keisuke Goto and Hideo Bannai.
-Details of the algorithm are available in [HOGEHOGEHOGE].
-The souce code is hosted in http://code.google.com/p/bgone/ .
+Details of the algorithm are available in [in preparation].
+The souce code is hosted at http://code.google.com/p/bgone/ .
 
 All source codes are licensed by MIT License.
 You can read the details in LICENSE file.
@@ -12,13 +12,12 @@ Note, source codes use partly saca-k.cpp made by G. Nong available at http://cod
 Scons (http://www.scons.org/) is used for the building process.
 Just type "scons" if you have it installed.
 
-
 -- Description
 
 This package contains implementations of linear time algorithms computing
 the Lempel Ziv(LZ77) factorization (also known as LZ77 parsing) from the paper
 
-[XXXXXXXXXXXXXX HOGE HOGE XXXXXXXXXXXXXXXX]
+[in preparation]
 
 Implemented algorithms:
 
@@ -38,9 +37,3 @@ paper mentioned above and publish the URL from which you downloaded the code.
 
 -- How to use
 See the help option, BGone -h or BGtwo -h.
-
-
-
-
-
-
