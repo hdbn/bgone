@@ -1,15 +1,12 @@
+////////////////////////////////////////////////////////////////////////////////
+// sa2phi.cpp
+////////////////////////////////////////////////////////////////////////////////
 #include <vector>
 #include <cassert>
 #include <iostream>
 
 #include "sa2phi.hpp"
 #include "saca-k.hpp"
-
-// TODO naiveな方法でLSMphi, Lphi, phiを計算しチェックする
-
-
-// Karkkainenらのやつみたいに
-// constant spaceのスタックを使うと良いのかも
 
 #define STACK_BITS 16
 #define STACK_SIZE (1 << STACK_BITS)
