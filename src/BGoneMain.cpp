@@ -1,20 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // BGoneMain.cpp
 //   lz factorization like one by Karkkainen et.al in CPM 2013.
-//   we use only 5n bytes and constant space.
-////////////////////////////////////////////////////////////////////////////////
-// Copyright 2013 Hideo Bannai & Keisuke Goto
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the
-// License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-// General Public License for more details.
-////////////////////////////////////////////////////////////////////////////////
+//   uses only 5n bytes and constant space.
+/////////////////////////////////////////////////////////////////////
 
 #include "bgCommon.hpp"
 #include "sa2phi.hpp"
@@ -54,9 +42,6 @@ int main(int argc, char * argv[]){  int ch;
     case 'c':
       count_only = true;
       break;
-      // case 'x':
-      //   useSAcache = true;
-      //   break;
     case 'g':
       checkResult = true;
       break;
@@ -77,10 +62,6 @@ int main(int argc, char * argv[]){  int ch;
   long double start_fromS = -1;
   long double start_fromSA = -1;
   std::string InitS;
-  // std::string str;
-  // stringFromFile(inFile, str);
-  // unsigned int n = str.size();
-  // const unsigned char * s = (unsigned char *) str.c_str();
   std::vector<std::pair<int,int> > * lz;
   std::cerr << "count only: ";
   if (count_only){
@@ -91,8 +72,6 @@ int main(int argc, char * argv[]){  int ch;
     lz = new std::vector<std::pair<int,int> >();
   }
   if (algoType == 1 || algoType == 3){
-    // parse options and read/construct string & suffix array
-    // unsigned char * s;
     read_text(inFile.c_str(), s, n); // Note size of s is n+1 not n.
     assert(s[n]==0);
 
@@ -113,10 +92,8 @@ int main(int argc, char * argv[]){  int ch;
     n = InitS.size();
 
     start_fromS = gettime();
-    // t1 = gettime();
     t2 = gettime();
     sa = (unsigned int *) suffixArray(InitS, (int *)sa, 0);
-    // sa = (unsigned int *) Init(argc, argv, InitS);
     std::cerr << "Time for sa: " << gettime() - t2 << std::endl;
 
     start_fromSA = gettime();
@@ -135,26 +112,16 @@ int main(int argc, char * argv[]){  int ch;
   std::cerr << "Time for lz: " << gettime() - t2 << std::endl;
   std::cerr << "Time for total_from_text: " << gettime() - start_fromS << std::endl;
   if (start_fromSA == -1){
-    // std::cerr << "Time for total_from_SA: " << 0 << std::endl;
   }else{
     std::cerr << "Time for total_from_SA: " << gettime() - start_fromSA << std::endl;
   }
   std::cerr << "# of lz factors: " << num_factor << std::endl;
   if(checkResult){
     std::string t = lz2str(*lz);
-    // debug
-    // std::cout << "lz->size()=" << lz->size() << std::endl;
-    // for(int j = 0; j < lz->size(); j++){
-    //   std::cout << "(" << lz->at(j).first << ", " << lz->at(j).second
-    //             << ") ";
-    // }
-    // debug
     bool ok = true;
     if (n != t.size()) ok = false;
     for (unsigned int i = 0; i < n; i++){
       if(s[i] != (unsigned char)t[i]){
-        // std::cout << std::endl;
-        // std::cout << "i=" << i << " "<< s[i] << ", " << t[i] << std::endl;
         ok = false;
         break;
       }
@@ -162,8 +129,6 @@ int main(int argc, char * argv[]){  int ch;
     if(!ok) std::cerr << "CHECK: ERROR: mismatch" << std::endl;
     else std::cerr << "CHECK: OK" << std::endl;
   }
-  // delete [] s;
-  // delete [] sa;
   if (lz != NULL) delete lz;
   return 0;
 }

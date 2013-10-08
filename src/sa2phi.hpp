@@ -148,9 +148,28 @@ void sa2nsv(const unsigned char * s, unsigned int * sa, int n, bool useCS = fals
 void text2nsv(const unsigned char *s, unsigned int *SA,
               unsigned int n, unsigned int K,
               bool  useCS = false);
+
+/**
+ *
+ * this is a wrapper function of saca-k.cpp to use computing only suffix array for LMS-suffixes
+ * 
+ * @param s input text
+ * @param SA suffix array of s
+ * @param n length of s
+ * @param K alphabet size
+ * @param n1 the number of LMS-suffixes
+ */
 void text2LMSsa(const unsigned char *s, unsigned int *SA,
                 unsigned int n, unsigned int K,
                 unsigned int & n1);
 
+/** 
+ * compute psv and nsv arrays from nsv array
+ * 
+ * @param n size of arrays
+ * @param in_nsv input nsv array
+ * @param psv output psv array
+ * @param nsv output nsv array
+ */
 void nsv2pnsv(unsigned int n, unsigned int * in_nsv,
               unsigned int * psv, unsigned int * nsv);

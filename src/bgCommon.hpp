@@ -23,8 +23,8 @@ namespace LZShuffle {
   /** 
    * print usage information
    * 
-   * @param argc 
-   * @param argv 
+   * @param argc the number of arguments
+   * @param argv arguments
    */
   void print_usage(int argc, char * argv []);
 
@@ -32,8 +32,8 @@ namespace LZShuffle {
    * parse options and read/construct string & suffix array
    * allocates memory if sa == 0. return memory for sa.
    * 
-   * @param argc 
-   * @param argv 
+   * @param argc the number of arguments
+   * @param argv arguments
    * @param s input text
    * @param f option for suffix array
    * @param sa pointer of suffix array

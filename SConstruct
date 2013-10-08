@@ -11,7 +11,7 @@ import os, sys, glob
 import types
 env = Environment(ENV = {'PATH' : os.environ['PATH']},
                   CC="gcc",CXX="g++",
-                  CCFLAGS="-Wall -Ofast -DNDEBUG -msse4.2",
+                  CCFLAGS="-Wall -fast -DNDEBUG -msse4.2",
                   LINKFLAGS="-Ofast -msse4.2")
 # env = Environment(CC="gcc", CXX="/opt/local/bin/g++", 
 #                   CCFLAGS="-Wall -fast -DNDEBUG -msse4.2",

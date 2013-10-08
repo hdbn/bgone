@@ -1,19 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// bgtMain.cpp
-//   lz factorization via PSV_text and NSV_text using peak elimination
-//   uses 13N bytes space
-////////////////////////////////////////////////////////////////////////////////
-// Copyright 2012 Hideo Bannai & Keisuke Goto
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the
-// License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-// General Public License for more details.
+// sa2phi_test.cpp
+//   test file for sa2phi.cpp
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "bgCommon.hpp"
@@ -63,25 +50,4 @@ int main(int argc, char * argv[]){
   delete [] phi;
   delete [] sa;
   delete [] us;
-  // std::cout << "Time for phi: " << gettime() - t1 << std::endl;
-  // t2 = gettime();
-  // for(i = 0; i < n; i++) psv[i] = nsv[i] = -1;
-  // for(i = 0; i < n; i++) peakElim(phi[i], i, psv, nsv, -1);
-  // std::cout << "Time for pnsv: " << gettime() - t2 << std::endl;
-
-  // ////////////////////////////////////////////////////////////
-  // // calculate LZ factorization from text order PSV, NSV
-  // ////////////////////////////////////////////////////////////
-  // std::vector<std::pair<int,int> > lz;
-  // t2 = gettime();
-  // lzFromTOPNSV(s, psv, nsv, lz);
-  // std::cout << "Time for lz: " << gettime() - t2 << std::endl;
-  // std::cout << "# of lz factors: " << lz.size() << std::endl;
-  // std::cout << "Total: " << gettime() - t1 << std::endl;
-  // if(checkResult){
-  //   std::string t = lz2str(lz);
-  //   if(s != t) std::cerr << "CHECK: ERROR: mismatch" << std::endl;
-  //   else std::cerr << "CHECK: OK" << std::endl;
-  // }
-  // return 0;
 }
