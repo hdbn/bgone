@@ -1,3 +1,4 @@
+
 ////////////////////////////////////////////////////////////////////////////////
 // sa2phi.cpp
 ////////////////////////////////////////////////////////////////////////////////
@@ -22,10 +23,8 @@ void show(int *A, int n){
 }
 
 
-// void sa2LMSsa(const unsigned char * s, int * sa, int n, int & n1){
 void sa2LMSsa(const unsigned char * s, unsigned int * sa, unsigned int n, unsigned int & n1){
   n1 = 0;
-  // const int n = s.size();
   std::vector<int> Sbkts(CHAR_SIZE, 0); // Sbkts[255] and Sbkte are never used
   std::vector<int> Sbkte(CHAR_SIZE, 0);
   int i;
@@ -34,25 +33,11 @@ void sa2LMSsa(const unsigned char * s, unsigned int * sa, unsigned int n, unsign
   bool cur_type = LTYPE;
   Sbkte[s[n-1]]++;
   for(i = n-2; i >= 0; i--){
-    // bkte[s[i]]++;
     if ( s[i] <  s[i+1]) cur_type = STYPE;
     if ( s[i] >  s[i+1]) cur_type = LTYPE;
-    // if((s[i] < s[i+1] && (unsigned char) s[i] > (unsigned char) s[i+1]) ||
-    //    (s[i] > s[i+1] && (unsigned char) s[i] < (unsigned char) s[i+1])){
-    //   std::cout << "[" << (int)s[i] << ", " << (int)s[i+1] << "]=("
-    //             << (unsigned char) s[i] << ", " << (unsigned char) s[i+1] << ")"
-    //             << std::endl;
-    // }
-    // if(s[i] < s[i+1]) assert((unsigned char) s[i] < (unsigned char) s[i+1]);
-    // if(s[i] > s[i+1]) assert((unsigned char) s[i] > (unsigned char) s[i+1]);
-    // assert(0 <= i && i < n);
     if (cur_type == STYPE){ Sbkts[s[i]]++;}
     else {Sbkte[s[i]]++;}
-    // sum1++;
-    // types[i] = cur_type;
   }
-  // std::cout << "sum1=" << sum1
-  //           << " sum2=" << sum2 << std::endl;
 
   unsigned int sum = 0;
   for (i = 0; i < CHAR_SIZE; i++){
@@ -65,15 +50,11 @@ void sa2LMSsa(const unsigned char * s, unsigned int * sa, unsigned int n, unsign
     // the interval of the suffixes prefixed by i and Stype in SA
     // Note Sbkte[i] may be negative integer
   }
-  // std::cout << "n=" << n << " sum=" << sum << std::endl;
   assert(n == sum);
   for(i = 0; i < CHAR_SIZE; i++){
     for (int j = Sbkts[i]; j <= Sbkte[i]; j++){
-      // std::cout << "i=" << i << " j=" << j << " Sbkts[i]=" << Sbkts[i]
-      //           << " Sbkte[i]=" << Sbkte[i] << std::endl;
       assert(j > 0);
       if (sa[j-1] > 0 && Sbkts[s[sa[j-1]-1]] > j-1){
-        // s[sa[j]-1] is Ltype, so sa[j] is LMS-suffix
         sa[n1++] = sa[j-1];
       }
     }
@@ -84,12 +65,9 @@ void sa2LMSsa(const unsigned char * s, unsigned int * sa, unsigned int n, unsign
   }
 }
 
-// void sa2LMSphi(const unsigned char * s, int * sa, int n, int n1){
 void sa2LMSphi(const unsigned char * s, unsigned int * sa, unsigned int n, unsigned int n1){
-  // int n = s.size();
   int sa0 = sa[0];
   int i;
-  // Now, sa[0..n1-1] must be the suffix array of LMS-suffix
 
   for(i = n1-1; i > 0; i--){
     sa[2*i] = sa[i];
@@ -99,83 +77,31 @@ void sa2LMSphi(const unsigned char * s, unsigned int * sa, unsigned int n, unsig
   for(i = n1-1; i >= 0; i--){
     const unsigned int cur = sa[2*i];
     sa[2*i] = EMPTY;
-    // sa[2*i] = EMPTY;
-    // int next = (i+1 == n1) ? EMPTY : sa[2*(i+1)]; // 2*n1 < nなら条件分岐いらないけど・・・
-    // int next = sa[2*(i+1)]; // 2*n1 < nなら条件分岐いらないけど・・・
-    // だめだsa[2*n1] = EMPTYとはかぎらない
-    // 条件分岐は削除できるけど少し面倒
     assert(cur != EMPTY && cur > 0);
-    // const int next = sa[2*(i+1)]; // cur +(cur%2)-1 == nextもありえる
-    // sa[2*(i+1)] = EMPTY;
 
     if (sa[cur] == EMPTY) sa[cur] = next;
     else sa[cur-1] = next;
-    // sa[cur + (cur % 2) -1] = next;
     next = cur;
 
-    // sa[2*(i+1)] = EMPTY;
-    // if (sa[cur] == EMPTY){ // 実は遇奇の判定で行ける
-    //   sa[cur] = next;
-    // }else{ // sa[cur] is already set by SA of LMS-suffix
-    //   assert(sa[cur-1] == EMPTY);
-    //   sa[cur-1] = next;
-    // }
   }
-  // show(sa, n);
-  // sa[0] = EMPTY;
 
-  // シーケンシャルにアクセスし，偶数番目を消去，奇数番目をシフトしたほうがキャッシュ効率的にも良いのかも
-  // いや単純にはだめだ．少し考えないと．
-  // sa[2*i-1]に値が入っていればその値は本当はsa[2*i]に入れなければいけない．
-  // sa[2*i] = EMPTYとする所をsa[2*i-1]に値が入っているのかを示すフラグを入れておけば
-  // 次の正しい値を入れる作業がsequentialに行えて速いのかもしれない．
-  // やっぱむずけえや，わかんね．
-
-  // rearrange the value which is set at a temporary position.
-  // sa[0..n-1]全てを走査するのと
-  // sa1[0..n1-1]を走査するのどちらが速いだろう？
-  // XXXXXXXXXX できればシーケンシャルにやりたい！！ XXXXXXXXXXXX
   unsigned int cur = sa0;
   do{
-    // if (cur % 2 == 0){ // sa[2*i] = EMPTYに設定していなくても大丈夫
     if (sa[cur] == EMPTY){ // cur must be even
-      // assert(sa[cur-1] != EMPTY);
-      // cur == sa[n1-1] sa[cur] and sa[cur-1] == EMPTY
       assert(cur > 0);
       sa[cur] = sa[cur-1];
       sa[cur-1] = EMPTY;
     }
-    // std::cout << cur << ", " << sa[cur] <<  std::endl;
     cur = sa[cur];
   }while (cur != EMPTY);
 
-
-
-  // ---ボツ
-  // for(i = n1-1; i >= 0; i--){
-  //   const int cur = sa[2*i];
-  //   assert(cur != EMPTY);
-  //   const int next = sa[2*(i+1)]; // cur +(cur%2)-1 == nextもありえる
-  //   sa[2*(i+1)] = EMPTY;
-  //   sa[cur + (cur % 2) -1] = next;
-  //   // --------- test
-  //   if (cur % 2 == 0){
-  //     if (sa[cur] == EMPTY) sa[cur] = next;
-  //     else sa[cur-1] = next;
-  //   }else{
-  //     if (sa[cur+1] == EMPTY) sa[cur+1] = next;
-  //     else sa[cur] = next;
-  //   }
-  // }
 }
 
 void inducePhiL(const unsigned char * s, unsigned int * phi, unsigned int n, int sa0,
                 std::vector<unsigned int> & Lbkts, std::vector<unsigned int> & Lbkte){
-  // int n = s.size();
   Lbkts[s[n-1]] = n-1; // we assume that s[n] is a sentinel that is smallest character in s.
   Lbkte[s[n-1]] = n-1;
   int phi_idx = sa0;
-  // std::cout << EMPTY << std::endl;
   for (int i = 0; i < CHAR_SIZE; i++){
     for (int j = 0; j < 2; j++){
       unsigned int cur;
@@ -184,16 +110,9 @@ void inducePhiL(const unsigned char * s, unsigned int * phi, unsigned int n, int
       if (cur == EMPTY) continue;
 
       int prev = EMPTY;
-      // while (cur != EMPTY){
       while (cur != EMPTY && s[cur] == i){ // We have to check s[cur] is i if we don't use S type bucket.
         if (cur > 0 &&  s[cur-1] >=s[cur]){
           const unsigned char c = s[cur-1];
-          // std::cout << "i=" << i << " j=" << j
-          //           << " lbkts=" << Lbkts[c] << " lbkte=" << Lbkte[c]
-          //           << " cur=" << cur << " s[cur-1]=" << (int)c
-          //           << " phi[lbkte[c]]="
-          //           << ((Lbkte[c] == EMPTY) ? -1 : phi[Lbkte[c]])
-          //           << std::endl;
           if (Lbkts[c] == EMPTY) Lbkts[c] = cur-1;
           else{
             assert(Lbkte[c] != EMPTY && phi[Lbkte[c]] == EMPTY);
@@ -209,7 +128,6 @@ void inducePhiL(const unsigned char * s, unsigned int * phi, unsigned int n, int
         cur = next;
       }
       if (j == 1) {
-        // assert(prev == EMPTY || s[prev] == i && s[cur] != i);
         phi_idx = cur;
       }
     }
@@ -225,7 +143,6 @@ void inducePhiS(const unsigned char * s, unsigned int * phi, unsigned int n, int
   std::vector<unsigned int> Sbkte(CHAR_SIZE, EMPTY);
   assert(phi[sa0] == EMPTY);
   unsigned int prev = EMPTY;
-  // int prev = sa0;
   for (int i = CHAR_SIZE-1; i >= 0; i--){
     for (int j = 0; j < 2; j++){
       unsigned int cur;
@@ -236,23 +153,11 @@ void inducePhiS(const unsigned char * s, unsigned int * phi, unsigned int n, int
       if (prev != EMPTY) phi[prev] = cur;
       while (cur != EMPTY){
         assert(cur < n);
-        // if (cur > 0 && ((j == 0 && (unsigned char) s[cur-1] <= (unsigned char) s[cur]) ||
-        //                 ((j == 1) && (unsigned char) s[cur-1] < (unsigned char) s[cur]))){
         if (cur > 0 && (s[cur-1]+j <= s[cur])){
-          // if (cur > 0 && type[cur-1] == STYPE){
-          // s[cur-1] is S type
           const unsigned char c = s[cur-1];
           if (Sbkte[c] == EMPTY) Sbkte[c] = cur-1;
           else{
             const int prev_S = Sbkts[c];
-            //   if(!(prev_S == sa0 || phi[prev_S] == EMPTY)){
-            // std::cout << "EMPTY=" << EMPTY << std::endl;
-            // std::cout << "i=" << i << " j=" << j
-            //           << " cur=" << cur << " n=" << s.size()
-            //           << "phi[" << prev_S << "]=" << phi[prev_S]
-            //           << std::endl;
-
-            //   }
             assert(prev_S == sa0 || phi[prev_S] == EMPTY);
             phi[prev_S] = cur-1;
           }
@@ -277,7 +182,6 @@ void sa2phi(const unsigned char * s, unsigned int * sa, unsigned int n){
   int lmssa0 = sa[0];
 
   sa2LMSphi(s, sa, n, n1);
-  // sa2LMSphi_old(s, sa, sa0);
   std::cout << "finish sa to LMS phi" << std::endl;
 
   inducePhiL(s, sa, n, lmssa0, Lbkts, Lbkte);
@@ -288,12 +192,6 @@ void sa2phi(const unsigned char * s, unsigned int * sa, unsigned int n){
   std::cout << "finish induce Phi S" << std::endl;
 }
 
-
-// Confirm the definition of sa[sa0] and
-// the value of psv_text when it is none value.
-// I supppose that sa[sa0] is EMPTY in a former situation,
-// and the value is -1 in a latter situation
-
 void nsvTOFromPhi(unsigned int *phi, unsigned int last_idx){
   unsigned int prev = EMPTY;
   unsigned int cur;
@@ -301,7 +199,6 @@ void nsvTOFromPhi(unsigned int *phi, unsigned int last_idx){
   cur = last_idx;
   while(cur != EMPTY){
     while(prev != EMPTY && cur < prev){
-      // std::cout << cur << ", " << prev <<std::endl;
       assert(prev != EMPTY);
       prev = phi[prev];
     }
@@ -330,10 +227,8 @@ void phiL2nsv_CS(const unsigned char * s, unsigned int * phi, unsigned int n, in
   std::vector<unsigned int> Sbkts(CHAR_SIZE, EMPTY); // Sbkts[255] and Sbkte are never used
   std::vector<unsigned int> Sbkte(CHAR_SIZE, EMPTY);
   int * stack = new int[STACK_SIZE + 5];
-  // int * stack = new int[STACK_SIZE + 5];
   unsigned int top = 0;
   stack[top] = 0;
-  // stack[top] = EMPTY;
   assert(phi[sa0] == EMPTY);
   unsigned int prev = EMPTY;
   for (int i = CHAR_SIZE-1; i >= 0; i--){
@@ -342,7 +237,6 @@ void phiL2nsv_CS(const unsigned char * s, unsigned int * phi, unsigned int n, in
       if (j == 0) cur = Sbkte[i];
       else cur = Lbkte[i];
       if (cur == EMPTY) continue;
-      // if (prev != EMPTY) phi[prev] = cur;
       while (cur != EMPTY){
         assert(cur < n);
         // induced sort
@@ -358,9 +252,6 @@ void phiL2nsv_CS(const unsigned char * s, unsigned int * phi, unsigned int n, in
         }
         // calculating nsv
 
-        // NSVの計算
-        // ここの実装をどうするか？
-        // 再帰，while, constant stack?
         while(stack[top] > (cur+1)) top--;
         if ((top & STACK_MASK) == 0){
           if(stack[top] < 0){
@@ -402,7 +293,6 @@ void phiL2nsv(const unsigned char * s, unsigned int * phi, unsigned int n, int s
       if (j == 0) cur = Sbkte[i];
       else cur = Lbkte[i];
       if (cur == EMPTY) continue;
-      // if (prev != EMPTY) phi[prev] = cur;
       while (cur != EMPTY){
         assert(cur < n);
         if (cur > 0 && (s[cur-1]+j <= s[cur])){
@@ -418,8 +308,6 @@ void phiL2nsv(const unsigned char * s, unsigned int * phi, unsigned int n, int s
         // calculating nsv
         const int next = phi[cur];
 
-        // ここの実装をどうするか？
-        // 再帰，while, constant stack?
         phi[cur] = peakElimRight(cur, prev, phi);
         prev = cur;
         cur = next;
@@ -443,7 +331,6 @@ void sa2nsv(const unsigned char * s, unsigned int * sa, int n, bool useCS){
   inducePhiL(s, sa, n, lmssa0, Lbkts, Lbkte);
   if (useCS) phiL2nsv_CS(s, sa, n, lmssa0, Lbkts, Lbkte);
   else phiL2nsv(s, sa, n, lmssa0, Lbkts, Lbkte);
-  // inducePhiS(s, sa, lmssa0, Lbkts, Lbkte);
 }
 
 
@@ -455,14 +342,11 @@ void text2nsv(const unsigned char *s, unsigned int *SA,
   std::vector<unsigned int> Lbkts(CHAR_SIZE, EMPTY);
   std::vector<unsigned int> Lbkte(CHAR_SIZE, EMPTY);
   int lmssa0 = SA[1];
-  // sa2LMSphi(s, SA, n1);
-  // castに注意
   for(unsigned int i = n1; i < n; i++) SA[i] = EMPTY;
   sa2LMSphi(s, SA+1, n-1, n1-1);
   inducePhiL(s, SA+1, n-1, lmssa0, Lbkts, Lbkte);
   if (useCS) phiL2nsv_CS(s, SA+1, n-1, lmssa0, Lbkts, Lbkte);
   else phiL2nsv(s, SA+1, n-1, lmssa0, Lbkts, Lbkte);
-  // phiL2nsv_CS(s, SA+1, n-1, lmssa0, Lbkts, Lbkte);
 }
 void text2LMSsa(const unsigned char *s, unsigned int *SA,
                 unsigned int n, unsigned int K,
@@ -518,7 +402,6 @@ void nsv2pnsv(unsigned int n, unsigned int * in_nsv,
   psv[0] = EMPTY;
   in_nsv[0] = EMPTY;
   for(i = 1; i < n; i++){
-    // if (in_nsv[i]==EMPTY) std::cout << i << "empty";
     nsv[i] = in_nsv[i];
     if (nsv[i] != EMPTY){
       psv[i] = in_nsv[nsv[i]];

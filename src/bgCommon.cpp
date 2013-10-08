@@ -24,10 +24,6 @@ namespace LZShuffle {
   bool checkResult = false;
   bool count_num_factors_only = false;
 
-  ////////////////////////////////////////////////////////////
-  // parse options and read/construct string & suffix array
-  ////////////////////////////////////////////////////////////
-  
   int * Init(int argc, char * argv[], std::string & s, unsigned int f, int * sa){
     int ch;
     std::string inFile, saFile;
@@ -76,9 +72,6 @@ namespace LZShuffle {
     return;
   }
 
-  ////////////////////////////////////////////////////////////
-  //read input string from file
-  ////////////////////////////////////////////////////////////
   void stringFromFile(const std::string & fileName, std::string & s){
     struct stat st;
     size_t fileSize;
@@ -160,11 +153,9 @@ namespace LZShuffle {
     return(sa);
   }
 
-  inline int naiveLCP(const unsigned char * const x, int i, int j, int n){
+  inline int naiveLCP(const unsigned char * const x, unsigned int i, unsigned int j, unsigned int n){
     int l = 0;
-    // std::cout << "(i, j, n)=(" << i << ", " << j << ", " << n << ")" << std::endl;
-    assert(0 <= i && i < j);
-    // if (j < i) std::swap(i, j);
+    assert(i < j);
     while(j < n && x[i++] == x[j++]){ l++; }
     return l;
   }
@@ -176,10 +167,6 @@ namespace LZShuffle {
                                    unsigned int nsvi){
     int plen = (psvi > p) ? 0 : naiveLCP(s, psvi, p, n);
     int nlen = (nsvi > p) ? 0 : naiveLCP(s, nsvi, p, n);
-    // int plen = (psvi >= n) ? 0 : naiveLCP(s, psvi, p, n);
-    // int nlen = (nsvi >= n) ? 0 : naiveLCP(s, nsvi, p, n);
-    // std::cout << std::endl << s << std::endl;
-    // std::cout << "(plen, nlen)=(" << plen << "," << nlen << ") s[" << p << "]=" << s[p] << std::endl;
     if (plen > nlen) return std::make_pair(plen, psvi);
     if (nlen > 0) return std::make_pair(nlen ,nsvi);
     else return std::make_pair(0, s[p]);
@@ -189,7 +176,7 @@ namespace LZShuffle {
                                        int p,
                                        unsigned int psvi,
                                        unsigned int nsvi){
-    int prevPos;
+    unsigned int prevPos;
     int common_len = 0;
     if (psvi >= n && nsvi >= n){
       common_len = naiveLCP(s, psvi, p, n);
@@ -216,11 +203,7 @@ namespace LZShuffle {
 		    const int * psv,
 		    const int * nsv,
 		    std::vector<std::pair<int,int> > * lz){
-    
-    ////////////////////////////////////////////////////////////
-    // main LZ factorization
-    ////////////////////////////////////////////////////////////
-    size_t p = 1;
+    unsigned int p = 1;
     if (lz) lz->push_back(std::make_pair(0, s[0]));
     unsigned int num_factor = 1;
     while(p < s.size()){
@@ -238,17 +221,12 @@ namespace LZShuffle {
       num_factor++;
     }
     return num_factor;
-    ////////////////////////////////////////////////////////////
   }
 
   void lzFromTOPNSV(const std::string & s, 
 		    const int * pnsv,
 		    std::vector<std::pair<int,int> > & lz){
-    
-    ////////////////////////////////////////////////////////////
-    // main LZ factorization
-    ////////////////////////////////////////////////////////////
-    size_t p = 1;
+    unsigned int p = 1;
     lz.clear();
     lz.push_back(std::make_pair(0, s[0]));
     while(p < s.size()){
@@ -265,35 +243,20 @@ namespace LZShuffle {
       }
     }
     return;
-    ////////////////////////////////////////////////////////////
   }
 
-  // void lzFromTONSV2(const unsigned char * s, 
-  //                   unsigned int * nsv,
-  //                   unsigned int n,
-  //                   std::vector<std::pair<int,int> > & lz){
   unsigned int lzFromTONSV2(const unsigned char * s, 
                     unsigned int * nsv,
                     unsigned int n,
                     std::vector<std::pair<int,int> > * lz){
-    
-    ////////////////////////////////////////////////////////////
-    // main LZ factorization
-    ////////////////////////////////////////////////////////////
     unsigned int p = 1;
-    // lz->clear();
     if (lz != NULL) lz->push_back(std::make_pair(0, s[0]));
-    // int l, prevPos;
     unsigned int nsvi, psvi;
     unsigned int next = 1;
-    // std::cout << "hoge" << std::endl;
     unsigned int imax = 0;
     unsigned int num_factor = 1;
-    // unsigned int EMPTY = UINT_MAX;
     nsv[0] = EMPTY;
-    // std::cout << nsv[0] <<", "<< nsv[1] <<", "<< nsv[2] << std::endl;
     while(p < n){
-      // std::cout << "p=" << p <<", nsv[p]="<< nsv[p] <<std::endl;
       assert(nsv[p] == EMPTY || nsv[p] < n);
       nsvi = nsv[p];
       if (nsvi != EMPTY){
@@ -302,65 +265,18 @@ namespace LZShuffle {
       }else{
         psvi = imax;
         imax = p;
-        // nsvi = EMPTY; // because nsvi is EMPTY
       }
       if (p == next){
-        // std::cout << "(p=" << p << ", psvi="  << psvi << ", nsvi="<< nsvi << ") ";
         const std::pair<int, int> f = factorTOPNSV2(s, n, p, psvi, nsvi);
-        // std::cout << "(" << f.first << "," << f.second << ") ";
         if (lz != NULL) lz->push_back(f);
         next = p+std::max(1, f.first);
         num_factor++;
       }
       nsv[p] = psvi;
-      // nsv[nsvi] = p;
       p++;
     }
     return num_factor;
-    ////////////////////////////////////////////////////////////
   }
-  // void lzFromTOPSV(const std::string & s, 
-  //       	    int * psv,
-  //       	    std::vector<std::pair<int,int> > & lz){
-    
-  //   ////////////////////////////////////////////////////////////
-  //   // main LZ factorization
-  //   ////////////////////////////////////////////////////////////
-  //   size_t p = 1;
-  //   lz.clear();
-  //   lz.push_back(std::make_pair(0, s[0]));
-  //   // int l, prevPos;
-  //   int nsvi, psvi;
-  //   size_t next = 1;
-  //   int imax = 0;
-  //   while(p < s.size()){
-  //     assert(psv[p] < (int)s.size());
-  //     psvi = psv[p];
-  //     if (psvi > 0){
-  //       nsvi = psv[psvi];
-  //       psv[psvi] = p;
-  //     }else{
-  //       // nsvi = psv[s.size()];
-  //       nsvi = imax;
-  //       // psv[imax] = p;
-  //       imax = p;
-  //       // psvi = s.size();
-  //     }
-  //     if (p == next){
-  //       const std::pair<int, int> f = factorTOPNSVOpt(s, p, psvi, nsvi);
-  //       // std::cout << "(" << f.first << "," << f.second << ") ";
-  //       lz.push_back(f);
-  //       next = p+std::max(1, f.first);
-  //     }
-  //     psv[p] = nsvi;
-  //     // nsv[nsvi] = p;
-  //     p++;
-  //   }
-  //   return;
-  //   ////////////////////////////////////////////////////////////
-  // }
-
-
   std::string lz2str(const std::vector<std::pair<int,int> > & lz){
     std::string s;
     size_t i;
