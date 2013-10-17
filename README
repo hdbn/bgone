@@ -7,9 +7,9 @@ The souce code is hosted at http://code.google.com/p/bgone/ .
 All source codes are licensed by MIT License.
 You can read the details in LICENSE file.
 
-We partly use souce codes made by G. Nong and Simon et.al,
+We partly use souce codes made by G. Nong and J. Karkkainen et.al,
 saca-k.cpp by G. Nong,
-the reading_text function within bgCommon.cpp by Simon et.al.
+the reading_text function within bgCommon.cpp by J. Karkkainen et.al.
 Their source codes are available at http://code.google.com/p/ge-nong/
 and https://www.cs.helsinki.fi/group/pads/lz77.html respectively.
 
