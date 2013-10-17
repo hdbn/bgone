@@ -132,7 +132,6 @@ namespace LZShuffle {
    */
   double gettime();
 
-  // read text by Simon Puglisi
   // Copyright (c) 2013 Juha Karkkainen, Dominik Kempa and Simon J. Puglisi
   void read_text(const char *filename, unsigned char* &text, unsigned int &length);
 };
